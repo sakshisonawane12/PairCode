@@ -389,6 +389,3 @@ VITE_YJS_URL=wss://your-yjs-server.onrender.com
 
 ---
 
-## 📄 License
-
-MIT License — free to use, modify, and distribute.
