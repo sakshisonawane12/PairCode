@@ -2,6 +2,7 @@ package com.paircode.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.PatternTopic;
@@ -33,6 +34,9 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(factory);
         container.addMessageListener(listenerAdapter, new PatternTopic("room:*"));
+        container.setErrorHandler(e -> System.err.println("Redis listener error: " + e.getMessage()));
+        container.setRecoveryInterval(5000L);
+        container.setAutoStartup(false);
         return container;
     }
 }
