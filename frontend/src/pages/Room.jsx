@@ -57,7 +57,10 @@ export default function Room() {
     if (!roomCode) return;
     const visited = JSON.parse(localStorage.getItem("visitedRooms") || "[]");
     if (!visited.includes(roomCode))
-      localStorage.setItem("visitedRooms", JSON.stringify([...visited, roomCode]));
+      localStorage.setItem(
+        "visitedRooms",
+        JSON.stringify([...visited, roomCode]),
+      );
   }, [roomCode]);
   const loadedRef = useRef(false);
   const fileContentsRef = useRef({});
@@ -96,12 +99,21 @@ export default function Room() {
   const { messages, connected, sendMessage, sendFileCreated, onlineUsers } =
     useWebSocket(roomCode, username, handleRemoteFileCreated);
 
-  const { connected: yjsConnected, awarenessUsers, sharedLanguage, setLanguage: setSharedLanguage } = useYjs(
+  const {
+    connected: yjsConnected,
+    awarenessUsers,
+    sharedLanguage,
+    setLanguage: setSharedLanguage,
+  } = useYjs(
     roomCode,
     activeFile?.fileName,
     username,
     editorMounted ? editorRef : null,
-    activeFile ? (fileContentsRef.current[activeFile.fileName] ?? activeFile.content ?? "") : "",
+    activeFile
+      ? (fileContentsRef.current[activeFile.fileName] ??
+          activeFile.content ??
+          "")
+      : "",
   );
 
   // When another user changes language, sync it locally
@@ -235,7 +247,10 @@ export default function Room() {
 
   const handleSaveSnapshot = async () => {
     try {
-      await saveSnapshot(roomCode, { content: editorRef.current?.getValue() ?? code, language });
+      await saveSnapshot(roomCode, {
+        content: editorRef.current?.getValue() ?? code,
+        language,
+      });
       setSaveStatus("snapshot saved ✓");
       setTimeout(() => setSaveStatus(""), 2000);
     } catch {
