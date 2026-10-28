@@ -18,13 +18,13 @@ public class CorsConfig {
                 "http://localhost:5173",
                 "http://localhost:5174",
                 "http://localhost:3000",
-                "https://pair-code-seven.vercel.app"
+                "https://pair-code-seven.vercel.app",
+                "https://pair-code-git-main-sakshisonawanepatil-2066s-projects.vercel.app"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
         config.setExposedHeaders(List.of("Set-Cookie"));
-config.setAllowedHeaders(List.of("*", "Cookie", "Set-Cookie"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
