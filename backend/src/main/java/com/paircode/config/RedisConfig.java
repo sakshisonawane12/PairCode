@@ -1,5 +1,6 @@
 package com.paircode.config;
 
+import io.lettuce.core.RedisURI;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,13 +32,12 @@ public class RedisConfig {
     public LettuceConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
         config.setPassword(password);
-
         LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
                 .useSsl()
+                .disablePeerVerification()
                 .and()
                 .commandTimeout(Duration.ofSeconds(10))
                 .build();
-
         return new LettuceConnectionFactory(config, clientConfig);
     }
 
@@ -59,7 +59,16 @@ public class RedisConfig {
     public RedisMessageListenerContainer redisContainer(
             RedisConnectionFactory factory,
             MessageListenerAdapter listenerAdapter) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer() {
+            @Override
+            public void start() {
+                try {
+                    super.start();
+                } catch (Exception e) {
+                    System.err.println("Redis listener container failed to start: " + e.getMessage());
+                }
+            }
+        };
         container.setConnectionFactory(factory);
         container.addMessageListener(listenerAdapter, new PatternTopic("room:*"));
         container.setErrorHandler(e -> System.err.println("Redis listener error: " + e.getMessage()));
